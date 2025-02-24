@@ -1,6 +1,7 @@
 import copy
 import json
 import argostranslate.translate
+import os
 
 
 # Placeholders iOS: “%lld”, “%lf”, and “%@” rispettivamente Int, Double e String
@@ -51,5 +52,7 @@ def ios_translate(source, codes):
 
         data["strings"] = strings
 
+        os.makedirs("out", exist_ok=True)
+        os.makedirs("out/ios", exist_ok=True)
         with open("out/ios/Localizable.xcstrings", 'w', encoding='utf-8') as jsonf:
             json.dump(data, jsonf, ensure_ascii=False, indent=4)

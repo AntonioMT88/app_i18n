@@ -35,6 +35,8 @@ def android_translate(source, source_language, codes):
             except Exception as e:
                 print(e)
 
+        os.makedirs("out", exist_ok=True)
+        os.makedirs("out/android", exist_ok=True)
         os.makedirs("out/android/values-" + code, exist_ok=True)
         with open("out/android/values-" + code + "/strings.xml", 'w', encoding='utf-8') as xmlf:
             xmlf.write(xmltodict.unparse(local_dict, pretty=True))

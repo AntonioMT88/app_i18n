@@ -1,5 +1,6 @@
 import json
 import argostranslate.translate
+import os
 
 
 def react_translate(source, codes):
@@ -26,6 +27,9 @@ def react_translate(source, codes):
                     )
                 except Exception as e:
                     print(e)
+
+            os.makedirs("out", exist_ok=True)
+            os.makedirs("out/react", exist_ok=True)
             with open("out/react/" + code + ".json", 'w', encoding='utf-8') as jsonf:
                 json.dump(translated_date, jsonf, ensure_ascii=False, indent=4)
             translated_date = dict()
