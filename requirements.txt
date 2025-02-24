@@ -1,0 +1,2 @@
+argostranslate==1.9.6
+xmltodict==0.14.2
