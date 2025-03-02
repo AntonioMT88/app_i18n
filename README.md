@@ -46,9 +46,9 @@ Make sure to install all the required dependencies before running the script.
 
 ## Usage
 
-1. python main.py <source_file> <languages>
+1. python main.py --source <source_file> --out <out_folder> --from_language <source_language> --to_language <out_language>
    ```bash
-   python main.py it.json it,en,es
+   python .\main.py --source .\strings.xml --out .\out --from_language en --to_language it,en,es
    
 - it.json: The source file containing the Italian strings.
 - it,en,es: A comma-separated list of languages for translation (including the source language).

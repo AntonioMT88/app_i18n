@@ -5,14 +5,14 @@ import os
 
 
 # Placeholders iOS: “%lld”, “%lf”, and “%@” rispettivamente Int, Double e String
-def ios_translate(source, codes):
-    with open(source, encoding='utf-8') as input:
-        data = json.load(input)
+def ios_translate(source, out, from_language, to_languages):
+    with open(source, encoding='utf-8') as f:
+        data = json.load(f)
         source_language = data["sourceLanguage"]
         strings = data["strings"]
 
         for obj in strings.keys():
-            local_codes = codes
+            local_codes = to_languages
             localizations = strings[obj]['localizations']
             for localization in localizations.keys():
                 if localization in local_codes:
@@ -21,38 +21,33 @@ def ios_translate(source, codes):
             for code in local_codes:
                 if code != source_language:
                     if source_language in strings[obj]['localizations'].keys():
-                        # print(f"Translating {obj} from \'it\' to \'{code}\'")
 
                         new_value = copy.deepcopy(strings[obj]['localizations'][source_language])
-                        translatedText = new_value['stringUnit']['value']
-
-                        # print(f"New Value to build: {new_value}")
-                        # print(f"Value to be translated: {translatedText}")
+                        translated_text = new_value['stringUnit']['value']
 
                         try:
-                            temp = argostranslate.translate.translate(
-                                strings[obj]['localizations'][source_language]['stringUnit']['value'],
-                                'it',
-                                'en'
-                            )
-                            # print(f"Translated Value into en \'{temp}\'")
-                            translatedText = argostranslate.translate.translate(
-                                temp,
+                            source_text = strings[obj]['localizations'][source_language]['stringUnit']['value']
+
+                            if from_language != "en" and from_language != "EN":
+                                source_text = argostranslate.translate.translate(
+                                    strings[obj]['localizations'][source_language]['stringUnit']['value'],
+                                    from_language,
+                                    'en'
+                                )
+                            translated_text = argostranslate.translate.translate(
+                                source_text,
                                 'en',
                                 code
                             )
-                            # print(f"Translated Value into en \'{translatedText}\'")
                         except Exception as e:
                             print(e)
 
-                        new_value['stringUnit']['value'] = translatedText
+                        new_value['stringUnit']['value'] = translated_text
                         strings[obj]['localizations'][code] = new_value
-                        # print(strings[obj]['localizations'])
-                        # print("\n\n")
 
         data["strings"] = strings
 
-        os.makedirs("out", exist_ok=True)
-        os.makedirs("out/ios", exist_ok=True)
-        with open("out/ios/Localizable.xcstrings", 'w', encoding='utf-8') as jsonf:
+        os.makedirs(out, exist_ok=True)
+        os.makedirs(out + os.sep + "ios", exist_ok=True)
+        with open(out + os.sep + "ios" + os.sep + "Localizable.xcstrings", 'w', encoding='utf-8') as jsonf:
             json.dump(data, jsonf, ensure_ascii=False, indent=4)
